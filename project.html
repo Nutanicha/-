@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบส่งงานนักศึกษา | Digital Business Innovation</title>
+    <!-- Google Fonts: Prompt & Fira Code สำหรับฟีล IT -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --primary-color: #6c5ce7;
+            --primary-hover: #5b4bc4;
+            --accent-color: #00b894;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --border-color: #dfe6e9;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(#dfe6e9 1px, transparent 1px), 
+                radial-gradient(#dfe6e9 1px, var(--bg-color) 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px 30px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ตกแต่งมุมแนว Tech Minimal */
+        .container::before {
+            content: '</>';
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            color: var(--primary-color);
+            opacity: 0.4;
+            letter-spacing: 1px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 12px;
+            border-radius: 50%;
+            padding: 5px;
+            background: #f1f2f6;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        input[type="text"],
+        input[type="url"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+        }
+
+        .file-upload-box {
+            border: 2px dashed var(--border-color);
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #fafbfc;
+            transition: 0.3s;
+        }
+
+        .file-upload-box:hover {
+            border-color: var(--primary-color);
+            background: rgba(108, 92, 231, 0.02);
+        }
+
+        .file-upload-box p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.4);
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <!-- ดึงโลโก้จากลิงก์ Google Drive ของคุณ -->
+            <img src="https://lh3.googleusercontent.com/d/1-kS8V_7MBTRBnByaI4U7m4HSz3lX3PoU" alt="University Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/70?text=LOGO'">
+            <h1>Assignment Submission</h1>
+            <p>Digital Business Innovation IT</p>
+        </div>
+
+        <form id="submitForm">
+            <div class="form-group">
+                <label for="studentId">📌 รหัสนักศึกษา</label>
+                <input type="text" id="studentId" placeholder="เช่น 6840xxxx" required>
+            </div>
+
+            <div class="form-group">
+                <label for="studentName">👤 ชื่อ - นามสกุล</label>
+                <input type="text" id="studentName" placeholder="กรอกชื่อและนามสกุลของคุณ" required>
+            </div>
+
+            <div class="form-group">
+                <label for="assignmentName">📂 เลือกชื่องาน</label>
+                <select id="assignmentName" required>
+                    <option value="" disabled selected>-- เลือกชื่องานที่ต้องการส่ง --</option>
+                    <option value="Week 5">Week 5</option>
+                    <option value="Week 6">Week 6</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="workLink">🔗 ลิงก์ผลงาน (Google Drive / GitHub / อื่นๆ)</label>
+                <input type="url" id="workLink" placeholder="https://..." required>
+            </div>
+
+            <button type="submit" class="submit-btn">🚀 ส่งงานเข้าระบบ</button>
+        </form>
+
+        <div class="footer-note">
+            System Status: Connected & Ready ✨
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('ส่งงานเรียบร้อยแล้ว ระบบบันทึกข้อมูลสำเร็จ! 🎉');
+            // ตรงนี้สามารถเขียนโค้ดเชื่อมต่อไปยัง Google Apps Script เพื่อบันทึกข้อมูลลง Sheets อัตโนมัติได้ครับ
+        });
+    </script>
+
+</body>
+</html>
