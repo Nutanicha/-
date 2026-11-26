@@ -9,59 +9,20 @@
 
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  padding:25px 15px;
-  font-family:'Prompt',sans-serif;
-  background:linear-gradient(135deg,#f4efff,#e8e5ff);
-  color:#30264a;
-}
-.container{
-  max-width:650px;
-  margin:auto;
-  background:white;
-  padding:30px;
-  border-radius:22px;
-  box-shadow:0 10px 35px #51408020;
-}
+body{margin:0;padding:25px 15px;font-family:'Prompt',sans-serif;background:linear-gradient(135deg,#f4efff,#e8e5ff);color:#30264a}
+.container{max-width:650px;margin:auto;background:white;padding:30px;border-radius:22px;box-shadow:0 10px 35px #51408020}
 h1{text-align:center;color:#7354b8;font-size:25px}
 .subtitle{text-align:center;color:#827895;margin-bottom:25px}
 label{display:block;margin:16px 0 7px;font-weight:500}
-input,select{
-  width:100%;
-  padding:13px;
-  border:1px solid #ddd5ef;
-  border-radius:10px;
-  font-family:inherit;
-  font-size:15px;
-  background:#fff;
-}
+input,select{width:100%;padding:13px;border:1px solid #ddd5ef;border-radius:10px;font-family:inherit;font-size:15px;background:#fff}
 input[readonly]{background:#f5f2fb;color:#65577f}
-button{
-  width:100%;
-  margin-top:22px;
-  padding:14px;
-  border:0;
-  border-radius:12px;
-  background:#7957bd;
-  color:white;
-  font-family:inherit;
-  font-size:16px;
-  font-weight:600;
-  cursor:pointer;
-}
+button{width:100%;margin-top:22px;padding:14px;border:0;border-radius:12px;background:#7957bd;color:white;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer}
 button:disabled{opacity:.55;cursor:not-allowed}
-.status{
-  margin-top:15px;
-  padding:12px;
-  border-radius:10px;
-  background:#f5f2fb;
-  text-align:center;
-  font-size:14px;
-}
+.status{margin-top:15px;padding:12px;border-radius:10px;background:#f5f2fb;text-align:center;font-size:14px}
 .note{font-size:13px;color:#887e9a;text-align:center;margin-top:18px}
 .error{color:#c0392b}
 .success{color:#218653}
+.refresh{margin-top:8px;background:#eee8fa;color:#63469c;font-size:13px;padding:9px}
 </style>
 </head>
 
@@ -70,7 +31,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <h1>🦉 Student Assignment Hub</h1>
   <div class="subtitle">DBI223-224 ระบบส่งงานนักศึกษา</div>
 
-  <div id="loadStatus" class="status">กำลังโหลดรายชื่อนักศึกษาจาก Google Sheets...</div>
+  <div id="loadStatus" class="status">กำลังเชื่อมต่อ Google Sheets...</div>
+  <button type="button" id="refreshButton" class="refresh" onclick="loadStudents()">↻ อัปเดตข้อมูล</button>
 
   <form id="submitForm">
     <label for="studentSelect">👤 เลือกรายชื่อนักศึกษา</label>
@@ -103,6 +65,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
 <script>
 const API_URL = "https://owl-assignment-bot.bewrattanasri24.workers.dev";
+const REFRESH_INTERVAL = 15000;
 
 const studentSelect = document.getElementById("studentSelect");
 const studentId = document.getElementById("studentId");
@@ -110,28 +73,77 @@ const studentName = document.getElementById("studentName");
 const studentStatus = document.getElementById("studentStatus");
 const loadStatus = document.getElementById("loadStatus");
 const submitButton = document.getElementById("submitButton");
+const refreshButton = document.getElementById("refreshButton");
 
 let students = [];
+let isSubmitting = false;
+let isLoading = false;
+
+function updateSubmitButton() {
+  const index = studentSelect.value;
+  const student = index === "" ? null : students[Number(index)];
+
+  submitButton.disabled =
+    isSubmitting || !student || student.status !== "ยังไม่ส่ง";
+}
+
+function clearSelectedStudent() {
+  studentSelect.value = "";
+  studentId.value = "";
+  studentName.value = "";
+  studentStatus.value = "";
+  updateSubmitButton();
+}
+
+function showSelectedStudent() {
+  const index = studentSelect.value;
+  const student = index === "" ? null : students[Number(index)];
+
+  if (!student) {
+    studentId.value = "";
+    studentName.value = "";
+    studentStatus.value = "";
+    updateSubmitButton();
+    return;
+  }
+
+  studentId.value = student.studentId;
+  studentName.value = student.studentName;
+  studentStatus.value = student.status;
+  updateSubmitButton();
+}
 
 async function loadStudents() {
-  try {
-    loadStatus.textContent = "กำลังโหลดข้อมูลจาก Google Sheets...";
+  if (isLoading || isSubmitting) return;
+  isLoading = true;
+  refreshButton.disabled = true;
 
-    const response = await fetch(API_URL + "/students");
+  const previousId = studentId.value;
+
+  try {
+    const response = await fetch(API_URL + "/students", {
+      method: "GET",
+      cache: "no-store"
+    });
+
     const result = await response.json();
 
     if (!response.ok || result.ok !== true || !Array.isArray(result.students)) {
-      throw new Error("ไม่สามารถอ่านข้อมูลจาก Google Sheets ได้");
+      throw new Error(result.message || "ไม่สามารถอ่านข้อมูลจาก Google Sheets ได้");
     }
 
-    students = result.students;
+    students = result.students.map(s => ({
+      studentId: String(s.studentId || "").trim(),
+      studentName: String(s.studentName || "").trim(),
+      status: String(s.status || "").trim()
+    }));
 
     studentSelect.innerHTML =
       '<option value="">-- เลือกรายชื่อนักศึกษา --</option>';
 
     students.forEach((student, index) => {
       const option = document.createElement("option");
-      option.value = index;
+      option.value = String(index);
       option.textContent =
         `${student.studentId} - ${student.studentName} (${student.status})`;
 
@@ -143,39 +155,39 @@ async function loadStudents() {
     });
 
     studentSelect.disabled = false;
-    submitButton.disabled = false;
+
+    const selectedIndex = students.findIndex(s => s.studentId === previousId);
+
+    if (selectedIndex >= 0) {
+      studentSelect.value = String(selectedIndex);
+    } else {
+      studentSelect.value = "";
+    }
+
+    showSelectedStudent();
 
     loadStatus.textContent =
-      `โหลดข้อมูลสำเร็จ ${students.length} คน | ${result.subject} | ${result.assignmentName} | กำหนดส่ง ${result.dueDate}`;
+      `เชื่อมต่อสำเร็จ · ${students.length} คน · ${result.subject} · ${result.assignmentName} · กำหนดส่ง ${result.dueDate}`;
+    loadStatus.className = "status success";
 
   } catch (error) {
     loadStatus.textContent = "โหลดข้อมูลไม่สำเร็จ: " + error.message;
+    loadStatus.className = "status error";
     studentSelect.disabled = true;
     submitButton.disabled = true;
+  } finally {
+    isLoading = false;
+    refreshButton.disabled = false;
   }
 }
 
-studentSelect.addEventListener("change", function () {
-  const student = students[Number(this.value)];
+studentSelect.addEventListener("change", showSelectedStudent);
 
-  if (!student) {
-    studentId.value = "";
-    studentName.value = "";
-    studentStatus.value = "";
-    return;
-  }
-
-  studentId.value = student.studentId;
-  studentName.value = student.studentName;
-  studentStatus.value = student.status;
-
-  submitButton.disabled = student.status !== "ยังไม่ส่ง";
-});
-
-document.getElementById("submitForm").addEventListener("submit", async function (e) {
+document.getElementById("submitForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  const student = students[Number(studentSelect.value)];
+  const index = studentSelect.value;
+  const student = index === "" ? null : students[Number(index)];
 
   if (!student || student.status !== "ยังไม่ส่ง") {
     alert("กรุณาเลือกนักศึกษาที่ยังไม่ส่งงาน");
@@ -189,13 +201,15 @@ document.getElementById("submitForm").addEventListener("submit", async function 
     return;
   }
 
+  isSubmitting = true;
   submitButton.disabled = true;
+  refreshButton.disabled = true;
   submitButton.textContent = "กำลังส่งงาน...";
 
   try {
     const response = await fetch(API_URL + "/submit", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         studentId: student.studentId,
         studentName: student.studentName,
@@ -208,28 +222,25 @@ document.getElementById("submitForm").addEventListener("submit", async function 
     const result = await response.json();
 
     if (!response.ok || result.ok !== true) {
-      throw new Error(result.message || "บันทึกข้อมูลไม่สำเร็จ");
+      throw new Error(result.message || "ระบบบันทึกข้อมูลไม่สำเร็จ");
     }
 
     alert("ส่งงานเรียบร้อยแล้ว 🎉");
     document.getElementById("workLink").value = "";
-
-    await loadStudents();
-
-    studentSelect.value = "";
-    studentId.value = "";
-    studentName.value = "";
-    studentStatus.value = "";
+    clearSelectedStudent();
 
   } catch (error) {
     alert("ส่งงานไม่สำเร็จ: " + error.message);
   } finally {
+    isSubmitting = false;
     submitButton.textContent = "ส่งงาน";
-    submitButton.disabled = false;
+    refreshButton.disabled = false;
+    await loadStudents();
   }
 });
 
 loadStudents();
+setInterval(loadStudents, REFRESH_INTERVAL);
 </script>
 </body>
 </html>
