@@ -1,360 +1,257 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DBI223-224 Student Assignment Hub</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet">
 
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  padding:25px 15px;
+  font-family:'Prompt',sans-serif;
+  background:linear-gradient(135deg,#f4efff,#e8e5ff);
+  color:#30264a;
 }
-
-body {
-  margin: 0;
-  padding: 25px 15px;
-  min-height: 100vh;
-  font-family: 'Prompt', sans-serif;
-  background: linear-gradient(135deg, #17152d, #292044, #40305e);
-  color: #fff;
+.container{
+  max-width:650px;
+  margin:auto;
+  background:white;
+  padding:30px;
+  border-radius:22px;
+  box-shadow:0 10px 35px #51408020;
 }
-
-.container {
-  max-width: 620px;
-  margin: 35px auto;
-  padding: 30px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 22px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+h1{text-align:center;color:#7354b8;font-size:25px}
+.subtitle{text-align:center;color:#827895;margin-bottom:25px}
+label{display:block;margin:16px 0 7px;font-weight:500}
+input,select{
+  width:100%;
+  padding:13px;
+  border:1px solid #ddd5ef;
+  border-radius:10px;
+  font-family:inherit;
+  font-size:15px;
+  background:#fff;
 }
-
-h1 {
-  text-align: center;
-  font-size: 25px;
-  margin: 0 0 8px;
+input[readonly]{background:#f5f2fb;color:#65577f}
+button{
+  width:100%;
+  margin-top:22px;
+  padding:14px;
+  border:0;
+  border-radius:12px;
+  background:#7957bd;
+  color:white;
+  font-family:inherit;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
 }
-
-.subtitle {
-  text-align: center;
-  color: #c9bedf;
-  font-size: 14px;
-  margin-bottom: 25px;
+button:disabled{opacity:.55;cursor:not-allowed}
+.status{
+  margin-top:15px;
+  padding:12px;
+  border-radius:10px;
+  background:#f5f2fb;
+  text-align:center;
+  font-size:14px;
 }
-
-.info {
-  background: rgba(190,160,255,0.12);
-  border: 1px solid rgba(190,160,255,0.25);
-  padding: 15px;
-  border-radius: 13px;
-  margin-bottom: 22px;
-  line-height: 1.9;
-  font-size: 14px;
-}
-
-label {
-  display: block;
-  margin: 17px 0 7px;
-  font-size: 14px;
-  color: #e8defc;
-}
-
-input, select {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 10px;
-  background: #f8f6fc;
-  color: #29213c;
-  font-family: 'Prompt', sans-serif;
-  font-size: 14px;
-  outline: none;
-}
-
-input[readonly] {
-  background: #e9e4f1;
-  color: #55496b;
-}
-
-button {
-  width: 100%;
-  margin-top: 25px;
-  padding: 14px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(90deg, #a987ef, #8064d8);
-  color: white;
-  font-family: 'Prompt', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.status {
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 10px;
-  text-align: center;
-  font-size: 14px;
-  background: rgba(255,255,255,0.08);
-  color: #e8defc;
-}
-
-.status.error {
-  color: #ffc2c2;
-  background: rgba(255,70,70,0.12);
-}
-
-.status.success {
-  color: #b9ffd1;
-  background: rgba(50,200,110,0.12);
-}
-
-.footer {
-  text-align: center;
-  margin-top: 25px;
-  color: #bcb1d1;
-  font-size: 12px;
-}
-
+.note{font-size:13px;color:#887e9a;text-align:center;margin-top:18px}
+.error{color:#c0392b}
+.success{color:#218653}
 </style>
 </head>
 
 <body>
-
 <div class="container">
-
   <h1>🦉 Student Assignment Hub</h1>
-  <div class="subtitle">DBI223-224 | ระบบส่งงานนักศึกษา</div>
+  <div class="subtitle">DBI223-224 ระบบส่งงานนักศึกษา</div>
 
-  <div class="info">
-    📚 วิชา: DBI223-224<br>
-    📝 งาน: Week 5<br>
-    📅 กำหนดส่ง: 13/11/2569<br>
-    <span id="studentCount">กำลังโหลดข้อมูลนักศึกษา...</span>
-  </div>
+  <div id="loadStatus" class="status">กำลังโหลดรายชื่อนักศึกษาจาก Google Sheets...</div>
 
   <form id="submitForm">
-
     <label for="studentSelect">👤 เลือกรายชื่อนักศึกษา</label>
-    <select id="studentSelect" required>
-      <option value="">กำลังโหลดรายชื่อ...</option>
+    <select id="studentSelect" required disabled>
+      <option value="">กำลังโหลดข้อมูล...</option>
     </select>
 
     <label for="studentId">📌 รหัสนักศึกษา</label>
-    <input type="text" id="studentId" readonly required>
+    <input id="studentId" type="text" readonly required>
 
     <label for="studentName">👤 ชื่อ - นามสกุล</label>
-    <input type="text" id="studentName" readonly required>
+    <input id="studentName" type="text" readonly required>
+
+    <label for="studentStatus">📋 สถานะการส่งงาน</label>
+    <input id="studentStatus" type="text" readonly>
 
     <label for="assignmentName">📝 ชื่องาน</label>
-    <input type="text" id="assignmentName" value="Week 5" readonly>
+    <select id="assignmentName" required>
+      <option value="Week 5">Week 5</option>
+    </select>
 
     <label for="workLink">🔗 ลิงก์ผลงาน</label>
-    <input
-      type="url"
-      id="workLink"
-      placeholder="https://..."
-      required
-    >
+    <input id="workLink" type="url" placeholder="https://..." required>
 
-    <button type="submit" id="submitButton" disabled>
-      📤 ส่งงาน
-    </button>
-
+    <button id="submitButton" type="submit" disabled>ส่งงาน</button>
   </form>
 
-  <div id="message" class="status">
-    กำลังเชื่อมต่อระบบ...
-  </div>
-
-  <div class="footer">
-    DBI223-224 Student Assignment Hub
-  </div>
-
+  <div class="note">กำหนดส่ง 13/11/2569 · DBI223-224</div>
 </div>
 
 <script>
-const WORKER_URL =
-  "https://owl-assignment-bot.bewrattanasri24.workers.dev";
-
-const SUBJECT = "DBI223-224";
-const ASSIGNMENT = "Week 5";
-
-let students = [];
+const API_URL = "https://owl-assignment-bot.bewrattanasri24.workers.dev";
 
 const studentSelect = document.getElementById("studentSelect");
 const studentId = document.getElementById("studentId");
 const studentName = document.getElementById("studentName");
+const studentStatus = document.getElementById("studentStatus");
+const loadStatus = document.getElementById("loadStatus");
 const submitButton = document.getElementById("submitButton");
-const message = document.getElementById("message");
-const studentCount = document.getElementById("studentCount");
 
-function showMessage(text, type = "") {
-  message.textContent = text;
-  message.className = "status " + type;
+let students = [];
+
+function getField(obj, keys) {
+  for (const key of keys) {
+    if (obj[key] !== undefined && obj[key] !== null) return obj[key];
+  }
+  return "";
+}
+
+function normalizeStatus(value) {
+  const s = String(value || "").trim();
+  return s === "ส่งแล้ว" ? "ส่งแล้ว" : "ยังไม่ส่ง";
 }
 
 async function loadStudents() {
-  studentSelect.innerHTML =
-    '<option value="">กำลังโหลดรายชื่อ...</option>';
-
-  submitButton.disabled = true;
-
   try {
-    const response = await fetch(WORKER_URL + "/students");
-    const data = await response.json();
+    loadStatus.textContent = "กำลังโหลดรายชื่อนักศึกษา...";
+    const response = await fetch(API_URL + "/students");
+    if (!response.ok) throw new Error("โหลดข้อมูลไม่สำเร็จ");
 
-    if (!response.ok || !data.ok) {
-      throw new Error(data.message || "โหลดรายชื่อไม่สำเร็จ");
+    const result = await response.json();
+    students = Array.isArray(result) ? result : result.students;
+
+    if (!Array.isArray(students)) {
+      throw new Error(result.message || "ไม่พบรายการนักศึกษาใน Google Sheets");
     }
 
-    students = Array.isArray(data.students) ? data.students : [];
+    studentSelect.innerHTML = '<option value="">-- เลือกรายชื่อของคุณ --</option>';
 
-    studentSelect.innerHTML =
-      '<option value="">-- เลือกรายชื่อนักศึกษา --</option>';
+    students.forEach((s, index) => {
+      const id = String(getField(s, ["id","studentId","studentID","รหัสนักศึกษา"])).trim();
+      const name = String(getField(s, ["name","studentName","ชื่อ","ชื่อนักศึกษา"])).trim();
+      const status = normalizeStatus(getField(s, ["status","สถานะ"]));
 
-    students.forEach((student, index) => {
+      if (!id || !name) return;
+
+      s._id = id;
+      s._name = name;
+      s._status = status;
+
       const option = document.createElement("option");
-
-      const id = String(student.studentId || "").trim();
-      const name = String(student.studentName || "").trim();
-      const status = String(student.status || "ยังไม่ส่ง").trim();
-
       option.value = String(index);
-      option.textContent =
-        `${id} - ${name} (${status})`;
-
-      if (status === "ส่งแล้ว") {
-        option.disabled = true;
-      }
-
+      option.textContent = `${id} - ${name} (${status})`;
+      option.disabled = status === "ส่งแล้ว";
       studentSelect.appendChild(option);
     });
 
-    const submitted = students.filter(
-      s => String(s.status).trim() === "ส่งแล้ว"
-    ).length;
+    studentSelect.disabled = false;
+    submitButton.disabled = false;
+    loadStatus.textContent = "โหลดรายชื่อนักศึกษาสำเร็จ";
+    loadStatus.className = "status success";
 
-    studentCount.textContent =
-      `นักศึกษาทั้งหมด ${students.length} คน | ส่งแล้ว ${submitted} คน | ยังไม่ส่ง ${students.length - submitted} คน`;
-
-    showMessage("โหลดรายชื่อนักศึกษาเรียบร้อยแล้ว");
-
+    if (studentSelect.options.length <= 1) {
+      loadStatus.textContent = "ไม่พบข้อมูลนักศึกษา กรุณาตรวจสอบ Google Sheets";
+      submitButton.disabled = true;
+    }
   } catch (error) {
-    studentSelect.innerHTML =
-      '<option value="">ไม่สามารถโหลดรายชื่อได้</option>';
-
-    studentCount.textContent = "ไม่สามารถโหลดข้อมูลนักศึกษาได้";
-    showMessage("❌ " + error.message, "error");
+    loadStatus.textContent = "โหลดข้อมูลไม่สำเร็จ: " + error.message;
+    loadStatus.className = "status error";
+    studentSelect.innerHTML = '<option value="">ไม่สามารถโหลดรายชื่อได้</option>';
+    submitButton.disabled = true;
   }
 }
 
 studentSelect.addEventListener("change", function() {
-  const index = this.value;
+  const s = students[Number(this.value)];
 
-  studentId.value = "";
-  studentName.value = "";
-  submitButton.disabled = true;
-
-  if (index === "") return;
-
-  const student = students[Number(index)];
-
-  if (!student) return;
-
-  studentId.value = student.studentId;
-  studentName.value = student.studentName;
-
-  if (student.status === "ส่งแล้ว") {
-    showMessage("นักศึกษาคนนี้ส่งงานแล้ว");
+  if (!s) {
+    studentId.value = "";
+    studentName.value = "";
+    studentStatus.value = "";
     return;
   }
 
-  submitButton.disabled = false;
-  showMessage("พร้อมส่งงาน");
+  studentId.value = s._id;
+  studentName.value = s._name;
+  studentStatus.value = s._status;
+
+  if (s._status === "ส่งแล้ว") {
+    submitButton.disabled = true;
+  } else {
+    submitButton.disabled = false;
+  }
 });
 
-document.getElementById("submitForm").addEventListener(
-  "submit",
-  async function(event) {
-    event.preventDefault();
+document.getElementById("submitForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
 
-    const selected = studentSelect.value;
-
-    if (selected === "") {
-      showMessage("กรุณาเลือกรายชื่อนักศึกษา", "error");
-      return;
-    }
-
-    const student = students[Number(selected)];
-    const workLink = document.getElementById("workLink").value.trim();
-
-    if (!student || student.status === "ส่งแล้ว") {
-      showMessage("ไม่สามารถส่งงานด้วยรายชื่อนี้ได้", "error");
-      return;
-    }
-
-    if (!/^https?:\/\/\S+/i.test(workLink)) {
-      showMessage("กรุณากรอกลิงก์ผลงานที่ถูกต้อง", "error");
-      return;
-    }
-
-    submitButton.disabled = true;
-    submitButton.textContent = "กำลังส่งงาน...";
-
-    try {
-      const response = await fetch(WORKER_URL + "/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          studentId: student.studentId,
-          studentName: student.studentName,
-          subject: SUBJECT,
-          assignmentName: ASSIGNMENT,
-          workLink: workLink
-        })
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.message || "ส่งงานไม่สำเร็จ");
-      }
-
-      showMessage(
-        "✅ ส่งงานเรียบร้อยแล้ว ระบบบันทึกข้อมูลสำเร็จ",
-        "success"
-      );
-
-      document.getElementById("workLink").value = "";
-
-      await loadStudents();
-
-      studentSelect.value = "";
-      studentId.value = "";
-      studentName.value = "";
-
-    } catch (error) {
-      showMessage("❌ " + error.message, "error");
-    } finally {
-      submitButton.textContent = "📤 ส่งงาน";
-      submitButton.disabled = true;
-    }
+  const selected = students[Number(studentSelect.value)];
+  if (!selected) {
+    alert("กรุณาเลือกรายชื่อนักศึกษาก่อนค่ะ");
+    return;
   }
-);
+
+  if (selected._status === "ส่งแล้ว") {
+    alert("นักศึกษาคนนี้ส่งงานแล้วค่ะ");
+    return;
+  }
+
+  const link = document.getElementById("workLink").value.trim();
+
+  if (!/^https?:\/\//i.test(link)) {
+    alert("กรุณากรอกลิงก์ผลงานที่ถูกต้อง");
+    return;
+  }
+
+  submitButton.disabled = true;
+  submitButton.textContent = "กำลังส่งข้อมูล...";
+
+  try {
+    const response = await fetch(API_URL + "/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        studentId: selected._id,
+        studentName: selected._name,
+        subject: "DBI223-224",
+        assignmentName: "Week 5",
+        workLink: link
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || result.ok !== true) {
+      throw new Error(result.message || "ระบบไม่สามารถบันทึกข้อมูลได้");
+    }
+
+    alert("ส่งงานเรียบร้อยแล้ว! 🎉");
+    document.getElementById("workLink").value = "";
+    await loadStudents();
+
+  } catch (error) {
+    alert("ส่งงานไม่สำเร็จ: " + error.message);
+  } finally {
+    submitButton.textContent = "ส่งงาน";
+    submitButton.disabled = false;
+  }
+});
 
 loadStudents();
 </script>
-
 </body>
 </html>
