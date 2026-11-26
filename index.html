@@ -1,100 +1,301 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DBI223-224 Student Assignment Hub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    :root {
-      --lav: #eee9ff;
-      --lav2: #ddd4ff;
-      --purple: #7563c9;
-      --deep: #51418f;
-      --blue: #e6f3ff;
-      --blue2: #cfe7ff;
-      --cream: #fff8e9;
-      --white: #fff;
-      --ink: #393253;
-      --muted: #89849e;
-      --line: #eeeaf6;
-      --green: #4caf91;
-      --yellow: #e8ad52;
-      --red: #d87988;
-      --shadow: 0 12px 34px rgba(86, 69, 143, .08);
-      --radius: 22px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DBI223-224 Student Assignment Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{
+ --lav:#eee9ff;--lav2:#ddd4ff;--purple:#7563c9;--deep:#51418f;
+ --blue:#e6f3ff;--blue2:#cfe7ff;--cream:#fff8e9;--white:#fff;
+ --ink:#393253;--muted:#89849e;--line:#eeeaf6;--green:#4caf91;
+ --yellow:#e8ad52;--red:#d87988;--shadow:0 12px 34px rgba(86,69,143,.08);
+ --radius:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Prompt',sans-serif;background:#faf9ff;color:var(--ink);min-height:100vh}
+button,input,select{font:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{width:248px;background:#fff;border-right:1px solid var(--line);padding:26px 18px;display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;z-index:5}
+.brand{display:flex;align-items:center;gap:11px;padding:0 10px 28px}
+.brand-mark{width:42px;height:42px;border-radius:14px;background:var(--lav);display:grid;place-items:center;color:var(--deep)}
+.brand-mark i{width:21px;height:21px}
+.brand strong{font-size:15px;line-height:1.25;display:block;color:var(--deep)}
+.brand small{font:10px 'Fira Code';color:var(--muted)}
+.nav-label{font-size:10px;letter-spacing:1.5px;color:#aaa4bb;padding:10px 12px}
+.nav{display:grid;gap:7px}
+.nav button{border:0;background:transparent;color:#827d96;padding:12px 14px;border-radius:13px;text-align:left;display:flex;align-items:center;gap:13px;cursor:pointer;transition:.2s;font-size:13px}
+.nav button i{width:18px;height:18px}
+.nav button:hover{background:#f8f5ff;color:var(--deep)}
+.nav button.active{background:var(--lav);color:var(--deep);font-weight:600}
+.sidebar-bottom{margin-top:auto;background:var(--cream);border-radius:18px;padding:14px;font-size:11px;color:#8b795c;line-height:1.6}
+.sidebar-bottom strong{display:block;color:#6d5b40;font-size:12px;margin-bottom:3px}
+.main{margin-left:248px;width:calc(100% - 248px);padding:28px 34px 45px;max-width:1600px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;gap:16px}
+.eyebrow{font:10px 'Fira Code';color:var(--purple);letter-spacing:1.4px;text-transform:uppercase;margin-bottom:5px}
+h1{font-size:25px;color:var(--deep);font-weight:600}
+.subhead{font-size:12px;color:var(--muted);margin-top:3px}
+.top-right{display:flex;align-items:center;gap:10px}
+.pill{background:#fff;border:1px solid var(--line);padding:9px 13px;border-radius:30px;font-size:11px;color:#77718e;display:flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block}
+.avatar{width:38px;height:38px;border-radius:13px;background:var(--lav);display:grid;place-items:center;color:var(--deep)}
+.page{display:none}.page.active{display:block}
+.grid{display:grid;gap:18px}
+.stats{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:18px}
+.stat{border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden;min-height:125px}
+.stat:nth-child(1){background:var(--lav)}.stat:nth-child(2){background:var(--blue)}.stat:nth-child(3){background:var(--cream)}
+.stat-label{font-size:12px;color:#77718e}.stat-value{font-size:31px;font-weight:600;color:var(--deep);margin-top:6px;line-height:1.2}
+.stat-note{font-size:10px;color:#89839e;margin-top:5px}
+.stat-icon{position:absolute;right:19px;top:20px;width:39px;height:39px;border-radius:13px;background:rgba(255,255,255,.65);display:grid;place-items:center;color:var(--purple)}
+.stat-icon i{width:19px;height:19px}
+.two-col{grid-template-columns:minmax(0,1.45fr) minmax(280px,.85fr);margin-bottom:18px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:21px;box-shadow:var(--shadow);min-width:0}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:17px}
+.panel h2{font-size:14px;font-weight:600;color:var(--deep)}
+.panel-desc{font-size:10px;color:var(--muted);margin-top:3px}
+.text-link{border:0;background:none;color:var(--purple);font-size:11px;cursor:pointer}
+.progress-wrap{display:flex;align-items:center;gap:22px;padding:4px 0}
+.ring{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;flex:none;background:conic-gradient(var(--purple) 0deg,#eeeaf6 0deg);position:relative}
+.ring:before{content:"";position:absolute;inset:9px;background:white;border-radius:50%}
+.ring-inner{z-index:1;text-align:center}.ring-inner strong{font-size:23px;color:var(--deep);display:block}.ring-inner span{font-size:9px;color:var(--muted)}
+.legend{display:grid;gap:12px;flex:1}.legend-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#77718e}
+.legend-label{display:flex;align-items:center;gap:8px}.swatch{width:8px;height:8px;border-radius:3px;background:var(--purple)}.swatch.pending{background:#e8c17e}
+.owl-card{background:linear-gradient(135deg,#f0ebff,#edf6ff 72%,#fff8e9);border:0;position:relative;overflow:hidden;min-height:205px;display:flex;align-items:center;padding:24px 28px}
+.owl-copy{position:relative;z-index:1;max-width:62%}.owl-copy .tag{font:9px 'Fira Code';color:var(--purple);letter-spacing:1px}.owl-copy h2{font-size:17px;line-height:1.5;margin:7px 0;color:var(--deep)}.owl-copy p{font-size:10px;color:#817b98;line-height:1.7}
+.owl-img{position:absolute;right:12px;bottom:-5px;width:34%;height:100%;object-fit:contain;object-position:center bottom;mix-blend-mode:multiply}
+.calendar-list{display:grid;gap:12px}.calendar-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:13px;background:#faf9ff}
+.datebox{width:43px;height:46px;border-radius:11px;background:var(--lav);display:grid;place-items:center;color:var(--deep);flex:none}
+.datebox strong{font-size:16px;line-height:1}.datebox span{font-size:8px}
+.calendar-item strong{display:block;font-size:11px;color:#514b6d}.calendar-item small{font-size:9px;color:var(--muted)}
+.table-tools{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+.search{position:relative;flex:1;min-width:180px}.search i{position:absolute;left:12px;top:11px;width:15px;color:#aaa4bb}
+.search input,.filter, .field input,.field select{width:100%;border:1px solid var(--line);background:#fcfbff;border-radius:11px;padding:10px 12px;outline:none;color:var(--ink);font-size:11px}
+.search input{padding-left:35px}.search input:focus,.filter:focus,.field input:focus,.field select:focus{border-color:var(--purple);box-shadow:0 0 0 3px #eee9ff}
+.filter{width:auto;min-width:135px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;white-space:nowrap}
+th{text-align:left;font-size:10px;color:#a09ab0;font-weight:500;padding:11px 12px;border-bottom:1px solid var(--line)}
+td{font-size:11px;padding:13px 12px;border-bottom:1px solid #f3f0f8;color:#5c5674}
+tbody tr:last-child td{border-bottom:0}
+.status{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:20px;font-size:9px}
+.status.done{background:#e9f8f2;color:#399879}.status.pending{background:#fff5e4;color:#b4863d}
+.empty{text-align:center;color:var(--muted);padding:24px;font-size:11px}
+.form-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px}
+.form-panel{max-width:100%}
+.field{margin-bottom:16px}.field label{display:block;font-size:11px;font-weight:500;color:#625b7b;margin-bottom:7px}
+.field input,.field select{padding:12px 13px;font-size:12px}
+.field input[readonly]{background:#f3f1f8;color:#8c879d}
+.help{font-size:9px;color:var(--muted);margin-top:6px}
+.status-box{padding:10px 12px;border-radius:10px;font-size:10px;margin-top:8px;background:#f5f3fa;color:#77718e}
+.status-box.pending{background:#fff5e4;color:#a77a32}.status-box.done{background:#e9f8f2;color:#399879}.status-box.error{background:#fff0f2;color:#c45d70}
+.primary-btn{border:0;background:var(--purple);color:#fff;border-radius:12px;padding:12px 18px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 6px 15px #7563c933;transition:.2s}
+.primary-btn:hover{background:var(--deep);transform:translateY(-1px)}.primary-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.secondary-btn{border:1px solid var(--line);background:white;color:var(--deep);border-radius:11px;padding:9px 12px;font-size:10px;cursor:pointer}
+.info-card{background:var(--cream);border:0}.info-card h3{font-size:13px;color:#766344;margin-bottom:7px}.info-card p{font-size:10px;color:#8d7c60;line-height:1.8}
+.connection-list{display:grid;gap:13px}.connection{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#69627f}.connection span:last-child{font-size:9px;color:#49977f;background:#eaf8f2;padding:5px 8px;border-radius:20px}
+.mobile-menu{display:none}
+@media(max-width:1000px){.sidebar{width:215px}.main{margin-left:215px;width:calc(100% - 215px);padding:24px}.two-col{grid-template-columns:1fr}.owl-card{min-height:190px}.form-layout{grid-template-columns:1fr}}
+@media(max-width:700px){.sidebar{width:66px;padding:18px 9px}.brand{padding:0 3px 24px}.brand>div:last-child,.nav-label,.nav button span,.sidebar-bottom{display:none}.brand-mark{width:46px;height:46px}.nav button{justify-content:center;padding:13px 8px}.main{margin-left:66px;width:calc(100% - 66px);padding:20px 14px}.topbar{align-items:flex-start}.top-right .pill{display:none}h1{font-size:20px}.stats{grid-template-columns:1fr}.stat{min-height:105px}.owl-copy{max-width:65%}.owl-img{width:48%}.panel{padding:16px}.progress-wrap{gap:14px}.ring{width:95px;height:95px}.form-layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand"><div class="brand-mark"><i data-lucide="graduation-cap"></i></div><div><strong>Student Hub</strong><small>DBI223-224 / IT</small></div></div>
+ <div class="nav-label">WORKSPACE</div>
+ <nav class="nav">
+  <button class="active" data-page="home"><i data-lucide="house"></i><span>Home</span></button>
+  <button data-page="dashboard"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></button>
+  <button data-page="assignments"><i data-lucide="notebook-pen"></i><span>Assignments</span></button>
+  <button data-page="students"><i data-lucide="users"></i><span>Students</span></button>
+  <button data-page="analytics"><i data-lucide="chart-no-axes-combined"></i><span>Analytics</span></button>
+  <button data-page="submit"><i data-lucide="send"></i><span>Submit Work</span></button>
+ </nav>
+ <div class="sidebar-bottom"><strong>✦ Study a little every day</strong>Small progress is still progress. Keep learning and keep growing!</div>
+</aside>
+<main class="main">
+ <header class="topbar">
+  <div><div class="eyebrow">DIGITAL BUSINESS INNOVATION</div><h1 id="pageTitle">Welcome to Student Hub</h1><p class="subhead" id="pageSubtitle">พื้นที่จัดการงานและติดตามความคืบหน้าการเรียน</p></div>
+  <div class="top-right"><div class="pill"><span class="dot"></span><span id="topConnection">กำลังเชื่อมต่อข้อมูล</span></div><div class="avatar"><i data-lucide="graduation-cap"></i></div></div>
+ </header>
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Prompt', sans-serif; background: #faf9ff; color: var(--ink); min-height: 100vh; }
-    button, input, select { font: inherit; }
+ <section class="page active" id="page-home">
+  <div style="margin-bottom:18px"><article class="panel owl-card"><div class="owl-copy"><div class="tag">YOUR STUDY BUDDY</div><h2>สวัสดี! พร้อมส่งงานกันหรือยัง?</h2><p>นกฮูกเพื่อนคู่เรียนพร้อมช่วยติดตามงานและความคืบหน้าของคุณแล้ว</p></div><img class="owl-img" src="data:image/png;base64,/* BASE64_IMAGE_DATA_PLACEHOLDER */" alt="มาสคอตนกฮูกสีขาวนักเรียนสาย IT"></article></div>
+  <div class="grid stats">
+   <article class="stat"><div class="stat-label">งานทั้งหมด</div><div class="stat-value" id="totalCount">1</div><div class="stat-note">Assignments in this course</div><div class="stat-icon"><i data-lucide="notebook-tabs"></i></div></article>
+   <article class="stat"><div class="stat-label">ส่งงานแล้ว</div><div class="stat-value" id="submittedCount">—</div><div class="stat-note">Successfully submitted</div><div class="stat-icon"><i data-lucide="check-check"></i></div></article>
+   <article class="stat"><div class="stat-label">ยังไม่ส่ง</div><div class="stat-value" id="pendingCount">—</div><div class="stat-note">Waiting for submission</div><div class="stat-icon"><i data-lucide="clock-3"></i></div></article>
+  </div>
+  <div class="grid two-col">
+   <article class="panel">
+    <div class="panel-head"><div><h2>Submission Progress</h2><p class="panel-desc">ภาพรวมสถานะการส่งงานของนักศึกษา</p></div><button class="text-link" data-goto="analytics">ดูรายละเอียด →</button></div>
+    <div class="progress-wrap"><div class="ring" id="progressRing"><div class="ring-inner"><strong id="progressPercent">0%</strong><span>COMPLETED</span></div></div><div class="legend"><div class="legend-row"><span class="legend-label"><i class="swatch"></i>ส่งแล้ว</span><strong id="legendDone">0 คน</strong></div><div class="legend-row"><span class="legend-label"><i class="swatch pending"></i>ยังไม่ส่ง</span><strong id="legendPending">0 คน</strong></div><div class="legend-row"><span class="legend-label"><i class="swatch" style="background:#c9c2df"></i>นักศึกษาทั้งหมด</span><strong id="legendTotal">0 คน</strong></div></div></div>
+   </article>
+  </div>
+  <div class="grid two-col">
+   <article class="panel"><div class="panel-head"><div><h2>Student Overview</h2><p class="panel-desc">สถานะการส่งงานล่าสุด</p></div><button class="text-link" data-goto="students">ดูนักศึกษาทั้งหมด →</button></div><div class="table-wrap"><table><thead><tr><th>รหัสนักศึกษา</th><th>ชื่อ - นามสกุล</th><th>สถานะ</th></tr></thead><tbody id="overviewRows"><tr><td colspan="3" class="empty">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></article>
+   <article class="panel"><div class="panel-head"><div><h2>Assignment Calendar</h2><p class="panel-desc">กำหนดส่งงานที่ต้องติดตาม</p></div><i data-lucide="calendar-days" style="color:#8b7bd0"></i></div><div class="calendar-list"><div class="calendar-item"><div class="datebox"><strong id="dueDay">13</strong><span id="dueMonth">NOV</span></div><div><strong id="calendarAssignment">Week 5</strong><small id="calendarDue">กำหนดส่ง 13/11/2569</small></div></div></div><div class="help">* วันกำหนดส่งแสดงตามข้อมูลจากระบบ</div></article>
+  </div>
+ </section>
 
-    .app { display: flex; min-height: 100vh; }
-    .sidebar {
-      width: 248px;
-      background: #fff;
-      border-right: 1px solid var(--line);
-      padding: 26px 18px;
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      inset: 0 auto 0 0;
-      z-index: 5;
-    }
-    .brand { display: flex; align-items: center; gap: 11px; padding: 0 10px 28px; }
-    .brand-mark { width: 42px; height: 42px; border-radius: 14px; background: var(--lav); display: grid; place-items: center; color: var(--deep); }
-    .brand-mark i { width: 21px; height: 21px; }
-    .brand strong { font-size: 15px; line-height: 1.25; display: block; color: var(--deep); }
-    .brand small { font: 10px 'Fira Code'; color: var(--muted); }
+ <section class="page" id="page-dashboard">
+  <div class="grid stats">
+   <article class="stat"><div class="stat-label">งานทั้งหมด</div><div class="stat-value" id="dashTotal">1</div><div class="stat-note">Current course assignments</div><div class="stat-icon"><i data-lucide="book-open"></i></div></article>
+   <article class="stat"><div class="stat-label">ส่งแล้ว</div><div class="stat-value" id="dashDone">—</div><div class="stat-note">Completed submissions</div><div class="stat-icon"><i data-lucide="badge-check"></i></div></article>
+   <article class="stat"><div class="stat-label">ยังไม่ส่ง</div><div class="stat-value" id="dashPending">—</div><div class="stat-note">Pending submissions</div><div class="stat-icon"><i data-lucide="hourglass"></i></div></article>
+  </div>
+  <div class="grid two-col"><article class="panel"><div class="panel-head"><div><h2>Learning Progress</h2><p class="panel-desc">ความคืบหน้าการส่งงานรายวิชา</p></div></div><div class="progress-wrap"><div class="ring" id="dashRing"><div class="ring-inner"><strong id="dashPercent">0%</strong><span>COMPLETED</span></div></div><div class="legend"><div class="legend-row"><span>ส่งแล้ว</span><strong id="dashDoneLabel">0 คน</strong></div><div class="legend-row"><span>ยังไม่ส่ง</span><strong id="dashPendingLabel">0 คน</strong></div></div></div></article><article class="panel info-card"><h3>✦ Learning reminder</h3><p>จัดเวลาเรียนและตรวจสอบกำหนดส่งงานอยู่เสมอ หากส่งงานแล้ว ระบบจะอัปเดตสถานะจาก Google Sheets โดยอัตโนมัติ</p></article></div>
+ </section>
 
-    .nav-label { font-size: 10px; letter-spacing: 1.5px; color: #aaa4bb; padding: 10px 12px; }
-    .nav { display: grid; gap: 7px; }
-    .nav button {
-      border: 0;
-      background: transparent;
-      color: #827d96;
-      padding: 12px 14px;
-      border-radius: 13px;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      cursor: pointer;
-      transition: .2s;
-      font-size: 13px;
-    }
-    .nav button i { width: 18px; height: 18px; }
-    .nav button:hover { background: #f8f5ff; color: var(--deep); }
-    .nav button.active { background: var(--lav); color: var(--deep); font-weight: 600; }
+ <section class="page" id="page-assignments">
+  <article class="panel"><div class="panel-head"><div><h2>Assignments</h2><p class="panel-desc">รายการงานในรายวิชา DBI223-224</p></div><span class="status pending">กำหนดส่ง <b id="assignmentDue">13/11/2569</b></span></div><div class="calendar-item"><div class="datebox"><i data-lucide="file-text"></i></div><div><strong id="assignmentTitle">Week 5</strong><small>วิชา DBI223-224 · <span id="assignmentDueText">13/11/2569</span></small></div><button class="primary-btn" style="margin-left:auto" data-goto="submit">ส่งงานตอนนี้</button></div></article>
+ </section>
 
-    .sidebar-bottom {
-      margin-top: auto;
-      background: var(--cream);
-      border-radius: 18px;
-      padding: 14px;
-      font-size: 11px;
-      color: #8b795c;
-      line-height: 1.6;
-    }
-    .sidebar-bottom strong { display: block; color: #6d5b40; font-size: 12px; margin-bottom: 3px; }
+ <section class="page" id="page-students">
+  <article class="panel"><div class="panel-head"><div><h2>Student Directory</h2><p class="panel-desc">รายชื่อนักศึกษาและสถานะการส่งงาน</p></div><button class="secondary-btn" id="refreshButton"><i data-lucide="refresh-cw" style="width:13px;vertical-align:middle"></i> รีเฟรชข้อมูล</button></div>
+   <div class="table-tools"><div class="search"><i data-lucide="search"></i><input id="studentSearch" type="search" placeholder="ค้นหารหัสหรือชื่อ..." /></div><select id="statusFilter" class="filter"><option value="all">ทุกสถานะ</option><option value="ส่งแล้ว">ส่งแล้ว</option><option value="ยังไม่ส่ง">ยังไม่ส่ง</option></select></div>
+   <div class="table-wrap"><table><thead><tr><th>รหัสนักศึกษา</th><th>ชื่อ - นามสกุล</th><th>รายวิชา</th><th>ชื่องาน</th><th>สถานะ</th></tr></thead><tbody id="studentRows"><tr><td colspan="5" class="empty">กำลังโหลดข้อมูล...</td></tr></tbody></table></div>
+  </article>
+ </section>
 
-    .main { margin-left: 248px; width: calc(100% - 248px); padding: 28px 34px 45px; max-width: 1600px; }
-    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; gap: 16px; }
-    .eyebrow { font: 10px 'Fira Code'; color: var(--purple); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 5px; }
-    h1 { font-size: 25px; color: var(--deep); font-weight: 600; }
-    .subhead { font-size: 12px; color: var(--muted); margin-top: 3px; }
-    .top-right { display: flex; align-items: center; gap: 10px; }
-    .pill { background: #fff; border: 1px solid var(--line); padding: 9px 13px; border-radius: 30px; font-size: 11px; color: #77718e; display: flex; align-items: center; gap: 7px; }
-    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; }
-    .avatar { width: 38px; height: 38px; border-radius: 13px; background: var(--lav); display: grid; place-items: center; color: var(--deep); }
+ <section class="page" id="page-analytics">
+  <div class="grid stats"><article class="stat"><div class="stat-label">นักศึกษาทั้งหมด</div><div class="stat-value" id="analyticsTotal">—</div><div class="stat-note">Students in current list</div></article><article class="stat"><div class="stat-label">อัตราการส่งงาน</div><div class="stat-value" id="analyticsRate">0%</div><div class="stat-note">Submission completion rate</div></article><article class="stat"><div class="stat-label">คงเหลือ</div><div class="stat-value" id="analyticsPending">—</div><div class="stat-note">Pending students</div></article></div>
+  <article class="panel"><div class="panel-head"><div><h2>Submission Analytics</h2><p class="panel-desc">สรุปความคืบหน้าการส่งงาน</p></div></div><div class="progress-wrap"><div class="ring" id="analyticsRing"><div class="ring-inner"><strong id="analyticsPercent">0%</strong><span>COMPLETED</span></div></div><div class="legend"><div class="legend-row"><span class="legend-label"><i class="swatch"></i>ส่งแล้ว</span><strong id="analyticsDone">0 คน</strong></div><div class="legend-row"><span class="legend-label"><i class="swatch pending"></i>ยังไม่ส่ง</span><strong id="analyticsWait">0 คน</strong></div></div></div></article>
+ </section>
 
-    .page { display: none; }
-    .page.active { display: block; }
-    .grid { display: grid; gap: 18px; }
-    .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 18px; }
-    .stat { border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow); position: relative; overflow: hidden; min-height: 125px; }
-    .stat:nth-child(1) { background: var(--lav); }
-    .stat:nth-child(2) { background: var(--blue); }
-    .stat:nth-child(3) { background: var(--cream); }
-    .stat-label { font-size: 12px; color: #77718e; }
+ <section class="page" id="page-submit">
+  <div class="form-layout">
+   <article class="panel form-panel"><div class="panel-head"><div><h2>Submit Your Assignment</h2><p class="panel-desc">กรอกข้อมูลและแนบลิงก์ผลงานเพื่อส่งเข้าระบบ</p></div><span class="status pending">Week 5</span></div>
+    <form id="submitForm">
+     <div class="field"><label for="studentId">รหัสนักศึกษา</label><select id="studentId" required disabled><option value="">กำลังโหลดรายชื่อนักศึกษา...</option></select></div>
+     <div class="field"><label for="studentName">ชื่อ - นามสกุล</label><input type="text" id="studentName" placeholder="ระบบจะแสดงชื่ออัตโนมัติ" readonly required><div id="studentStatus" class="status-box">กรุณาเลือกรหัสนักศึกษา</div></div>
+     <div class="field"><label for="assignmentName">ชื่องาน</label><select id="assignmentName" required><option value="Week 5">Week 5</option></select></div>
+     <div class="field"><label for="workLink">ลิงก์ผลงาน (Google Drive / GitHub / อื่น ๆ)</label><input type="url" id="workLink" placeholder="https://..." required><p class="help">ตรวจสอบสิทธิ์การเข้าถึงลิงก์ก่อนกดส่งงาน</p></div>
+     <button type="submit" class="primary-btn" id="submitButton" disabled>ส่งงานเข้าระบบ <i data-lucide="send" style="width:14px;vertical-align:middle"></i></button>
+    </form>
+   </article>
+   <div class="grid" style="align-content:start">
+    <article class="panel info-card"><h3>✎ ก่อนส่งงาน</h3><p>1. เลือกรหัสนักศึกษาของตนเอง<br>2. ตรวจสอบชื่อและสถานะ<br>3. วางลิงก์ผลงาน<br>4. กดส่งงานและรอระบบยืนยัน</p></article>
+    <article class="panel"><div class="panel-head"><div><h2>System Connection</h2><p class="panel-desc">สถานะบริการที่ใช้งาน</p></div></div><div class="connection-list"><div class="connection"><span>Google Sheets</span><span id="sheetsStatus">กำลังเชื่อมต่อ</span></div><div class="connection"><span>Discord Notification</span><span id="discordStatus">พร้อมแจ้งเตือน</span></div></div><p class="help" style="margin-top:12px">Discord จะได้รับแจ้งเตือนเมื่อการส่งงานได้รับการยืนยันจากระบบ</p></article>
+   </div>
+  </div>
+ </section>
+ <footer style="text-align:center;padding:28px 0 0;color:#aaa4bb;font:9px 'Fira Code'"><span id="loadStatus">SYSTEM STATUS: CONNECTING...</span> · AUTO SYNC 15 SEC</footer>
+</main>
+</div>
+<script>
+const API_URL='https://owl-assignment-bot.bewrattanasri24.workers.dev';
+const SUBJECT='DBI223-224', ASSIGNMENT='Week 5', REFRESH_INTERVAL=15000;
+const $=id=>document.getElementById(id);
+let students=[],isSubmitting=false,apiDueDate='13/11/2569';
+
+const pageMeta={
+ home:['Welcome to Student Hub','พื้นที่จัดการงานและติดตามความคืบหน้าการเรียน'],
+ dashboard:['Dashboard','ภาพรวมการเรียนและสถานะการส่งงาน'],
+ assignments:['Assignments','ตรวจสอบงานและกำหนดส่ง'],
+ students:['Students','จัดการรายชื่อนักศึกษาและสถานะ'],
+ analytics:['Analytics','วิเคราะห์ความคืบหน้าการส่งงาน'],
+ submit:['Submit Work','ส่งผลงานเข้าสู่ระบบ']
+};
+function goPage(name){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ $('page-'+name).classList.add('active');
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
+ $('pageTitle').textContent=pageMeta[name][0];$('pageSubtitle').textContent=pageMeta[name][1];
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>goPage(b.dataset.page)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>goPage(b.dataset.goto)));
+
+function dateParts(date){
+ const m=String(date||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+ if(!m)return null;
+ const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+ return {day:m[1],month:months[Number(m[2])-1]||'NOV'};
+}
+function setText(id,value){const el=$(id);if(el)el.textContent=value;}
+function renderStats(){
+ const total=students.length,done=students.filter(s=>String(s.status).trim()==='ส่งแล้ว').length,pending=students.filter(s=>String(s.status).trim()!=='ส่งแล้ว').length;
+ const pct=total?Math.round(done/total*100):0;
+ ['submittedCount','dashDone','legendDone','dashDoneLabel','analyticsDone'].forEach(id=>setText(id,id.includes('Label')||id.includes('legend')||id==='analyticsDone'?`${done} คน`:done));
+ ['pendingCount','dashPending','legendPending','dashPendingLabel','analyticsWait','analyticsPending'].forEach(id=>setText(id,id.includes('Label')||id.includes('legend')||id==='analyticsWait'?`${pending} คน`:pending));
+ ['totalCount','dashTotal'].forEach(id=>setText(id,1));
+ ['legendTotal','analyticsTotal'].forEach(id=>setText(id,`${total} คน`));
+ ['progressPercent','dashPercent','analyticsPercent','analyticsRate'].forEach(id=>setText(id,`${pct}%`));
+ setText('analyticsPending',pending);
+ ['progressRing','dashRing','analyticsRing'].forEach(id=>$(id).style.background=`conic-gradient(var(--purple) ${pct*3.6}deg,#eeeaf6 0deg)`);
+}
+function renderStudents(){
+ const query=($('studentSearch')?.value||'').trim().toLowerCase(),filter=$('statusFilter')?.value||'all';
+ const filtered=students.filter(s=>{
+  const hay=`${s.studentId} ${s.studentName}`.toLowerCase();
+  return hay.includes(query)&&(filter==='all'||s.status===filter);
+ });
+ $('studentRows').innerHTML=filtered.length?filtered.map(s=>`<tr><td>${escapeHTML(s.studentId)}</td><td>${escapeHTML(s.studentName)}</td><td>${SUBJECT}</td><td>${ASSIGNMENT}</td><td>${statusHTML(s.status)}</td></tr>`).join(''):`<tr><td colspan="5" class="empty">ไม่พบรายชื่อนักศึกษาที่ตรงกับการค้นหา</td></tr>`;
+ $('overviewRows').innerHTML=students.slice(0,5).map(s=>`<tr><td>${escapeHTML(s.studentId)}</td><td>${escapeHTML(s.studentName)}</td><td>${statusHTML(s.status)}</td></tr>`).join('')||'<tr><td colspan="3" class="empty">ยังไม่มีข้อมูล</td></tr>';
+}
+function statusHTML(status){return status==='ส่งแล้ว'?'<span class="status done">● ส่งแล้ว</span>':'<span class="status pending">● ยังไม่ส่ง</span>'}
+function escapeHTML(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+async function loadStudents(){
+ try{
+  const response=await fetch(`${API_URL}/students`,{method:'GET',cache:'no-store'});
+  if(!response.ok)throw new Error('ไม่สามารถเชื่อมต่อระบบข้อมูลได้');
+  const result=await response.json();
+  if(!result.ok||!Array.isArray(result.students))throw new Error('รูปแบบข้อมูลไม่ถูกต้อง');
+  students=result.students;
+  if(result.dueDate)apiDueDate=String(result.dueDate);
+  setText('assignmentDue',apiDueDate);setText('assignmentDueText',apiDueDate);setText('calendarDue',`กำหนดส่ง ${apiDueDate}`);
+  if(result.assignmentName){setText('assignmentTitle',result.assignmentName);setText('calendarAssignment',result.assignmentName)}
+  const parts=dateParts(apiDueDate);if(parts){setText('dueDay',parts.day);setText('dueMonth',parts.month)}
+  const previousId=$('studentId').value;
+  $('studentId').innerHTML='<option value="">-- เลือกรหัสนักศึกษา --</option>';
+  students.forEach(s=>{const o=document.createElement('option');o.value=String(s.studentId);o.textContent=`${s.studentId} - ${s.studentName}`;$('studentId').appendChild(o)});
+  $('studentId').disabled=false;
+  if(previousId)$('studentId').value=previousId;
+  updateStudentInfo();renderStats();renderStudents();
+  setText('loadStatus','SYSTEM STATUS: GOOGLE SHEETS CONNECTED');
+  setText('topConnection','Google Sheets Connected');
+  setText('sheetsStatus','เชื่อมต่อแล้ว');
+ }catch(err){
+  console.error('Load students error:',err);
+  setText('loadStatus','SYSTEM STATUS: CONNECTION ERROR');
+  setText('topConnection','Connection Error');setText('sheetsStatus','เชื่อมต่อไม่สำเร็จ');
+  $('studentId').disabled=true;$('submitButton').disabled=true;
+ }
+}
+function updateStudentInfo(){
+ const id=$('studentId').value,s=students.find(x=>String(x.studentId)===id);
+ if(!s){$('studentName').value='';$('studentStatus').textContent='กรุณาเลือกรหัสนักศึกษา';$('studentStatus').className='status-box';$('submitButton').disabled=true;return}
+ $('studentName').value=s.studentName;
+ if(s.status==='ส่งแล้ว'){$('studentStatus').textContent='✓ ส่งงานแล้ว ไม่สามารถส่งซ้ำได้';$('studentStatus').className='status-box done';$('submitButton').disabled=true}
+ else{$('studentStatus').textContent='◷ ยังไม่ส่ง สามารถส่งงานได้';$('studentStatus').className='status-box pending';$('submitButton').disabled=false}
+}
+$('studentId').addEventListener('change',updateStudentInfo);
+$('studentSearch').addEventListener('input',renderStudents);
+$('statusFilter').addEventListener('change',renderStudents);
+$('refreshButton').addEventListener('click',loadStudents);
+
+$('submitForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(isSubmitting)return;
+ const id=$('studentId').value,s=students.find(x=>String(x.studentId)===id),link=$('workLink').value.trim();
+ if(!s){alert('กรุณาเลือกรหัสนักศึกษา');return}
+ if(s.status==='ส่งแล้ว'){alert('นักศึกษารหัสนี้ส่งงานเรียบร้อยแล้ว');updateStudentInfo();return}
+ if(!link){alert('กรุณากรอกลิงก์ผลงาน');return}
+ isSubmitting=true;$('submitButton').disabled=true;$('submitButton').textContent='กำลังส่งงาน...';
+ try{
+  const response=await fetch(`${API_URL}/submit`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentId:s.studentId,studentName:s.studentName,subject:SUBJECT,assignmentName:ASSIGNMENT,workLink:link})});
+  const result=await response.json();
+  if(!response.ok||!result.ok)throw new Error(result.message||'ระบบไม่สามารถบันทึกข้อมูลได้');
+  alert('ส่งงานเรียบร้อยแล้ว! ระบบบันทึกข้อมูลและดำเนินการแจ้งเตือนแล้ว');
+  $('workLink').value='';await loadStudents();$('studentId').value=id;updateStudentInfo();
+ }catch(err){console.error(err);alert('ส่งงานไม่สำเร็จ\n'+err.message+'\nกรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง')}
+ finally{isSubmitting=false;$('submitButton').innerHTML='ส่งงานเข้าระบบ <i data-lucide="send" style="width:14px;vertical-align:middle"></i>';updateStudentInfo();if(window.lucide)lucide.createIcons()}
+});
+loadStudents();setInterval(()=>{if(!isSubmitting)loadStudents()},REFRESH_INTERVAL);
+if(window.lucide)lucide.createIcons();
+</script>
+</body>
+</html>
