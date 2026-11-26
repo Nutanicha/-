@@ -113,135 +113,113 @@ const submitButton = document.getElementById("submitButton");
 
 let students = [];
 
-function getField(obj, keys) {
-  for (const key of keys) {
-    if (obj[key] !== undefined && obj[key] !== null) return obj[key];
-  }
-  return "";
-}
-
-function normalizeStatus(value) {
-  const s = String(value || "").trim();
-  return s === "ส่งแล้ว" ? "ส่งแล้ว" : "ยังไม่ส่ง";
-}
-
 async function loadStudents() {
   try {
-    loadStatus.textContent = "กำลังโหลดรายชื่อนักศึกษา...";
+    loadStatus.textContent = "กำลังโหลดข้อมูลจาก Google Sheets...";
+
     const response = await fetch(API_URL + "/students");
-    if (!response.ok) throw new Error("โหลดข้อมูลไม่สำเร็จ");
-
     const result = await response.json();
-    students = Array.isArray(result) ? result : result.students;
 
-    if (!Array.isArray(students)) {
-      throw new Error(result.message || "ไม่พบรายการนักศึกษาใน Google Sheets");
+    if (!response.ok || result.ok !== true || !Array.isArray(result.students)) {
+      throw new Error("ไม่สามารถอ่านข้อมูลจาก Google Sheets ได้");
     }
 
-    studentSelect.innerHTML = '<option value="">-- เลือกรายชื่อของคุณ --</option>';
+    students = result.students;
 
-    students.forEach((s, index) => {
-      const id = String(getField(s, ["id","studentId","studentID","รหัสนักศึกษา"])).trim();
-      const name = String(getField(s, ["name","studentName","ชื่อ","ชื่อนักศึกษา"])).trim();
-      const status = normalizeStatus(getField(s, ["status","สถานะ"]));
+    studentSelect.innerHTML =
+      '<option value="">-- เลือกรายชื่อนักศึกษา --</option>';
 
-      if (!id || !name) return;
-
-      s._id = id;
-      s._name = name;
-      s._status = status;
-
+    students.forEach((student, index) => {
       const option = document.createElement("option");
-      option.value = String(index);
-      option.textContent = `${id} - ${name} (${status})`;
-      option.disabled = status === "ส่งแล้ว";
+      option.value = index;
+      option.textContent =
+        `${student.studentId} - ${student.studentName} (${student.status})`;
+
+      if (student.status === "ส่งแล้ว") {
+        option.disabled = true;
+      }
+
       studentSelect.appendChild(option);
     });
 
     studentSelect.disabled = false;
     submitButton.disabled = false;
-    loadStatus.textContent = "โหลดรายชื่อนักศึกษาสำเร็จ";
-    loadStatus.className = "status success";
 
-    if (studentSelect.options.length <= 1) {
-      loadStatus.textContent = "ไม่พบข้อมูลนักศึกษา กรุณาตรวจสอบ Google Sheets";
-      submitButton.disabled = true;
-    }
+    loadStatus.textContent =
+      `โหลดข้อมูลสำเร็จ ${students.length} คน | ${result.subject} | ${result.assignmentName} | กำหนดส่ง ${result.dueDate}`;
+
   } catch (error) {
     loadStatus.textContent = "โหลดข้อมูลไม่สำเร็จ: " + error.message;
-    loadStatus.className = "status error";
-    studentSelect.innerHTML = '<option value="">ไม่สามารถโหลดรายชื่อได้</option>';
+    studentSelect.disabled = true;
     submitButton.disabled = true;
   }
 }
 
-studentSelect.addEventListener("change", function() {
-  const s = students[Number(this.value)];
+studentSelect.addEventListener("change", function () {
+  const student = students[Number(this.value)];
 
-  if (!s) {
+  if (!student) {
     studentId.value = "";
     studentName.value = "";
     studentStatus.value = "";
     return;
   }
 
-  studentId.value = s._id;
-  studentName.value = s._name;
-  studentStatus.value = s._status;
+  studentId.value = student.studentId;
+  studentName.value = student.studentName;
+  studentStatus.value = student.status;
 
-  if (s._status === "ส่งแล้ว") {
-    submitButton.disabled = true;
-  } else {
-    submitButton.disabled = false;
-  }
+  submitButton.disabled = student.status !== "ยังไม่ส่ง";
 });
 
-document.getElementById("submitForm").addEventListener("submit", async function(e) {
+document.getElementById("submitForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  const selected = students[Number(studentSelect.value)];
-  if (!selected) {
-    alert("กรุณาเลือกรายชื่อนักศึกษาก่อนค่ะ");
+  const student = students[Number(studentSelect.value)];
+
+  if (!student || student.status !== "ยังไม่ส่ง") {
+    alert("กรุณาเลือกนักศึกษาที่ยังไม่ส่งงาน");
     return;
   }
 
-  if (selected._status === "ส่งแล้ว") {
-    alert("นักศึกษาคนนี้ส่งงานแล้วค่ะ");
-    return;
-  }
+  const workLink = document.getElementById("workLink").value.trim();
 
-  const link = document.getElementById("workLink").value.trim();
-
-  if (!/^https?:\/\//i.test(link)) {
-    alert("กรุณากรอกลิงก์ผลงานที่ถูกต้อง");
+  if (!/^https?:\/\//i.test(workLink)) {
+    alert("กรุณากรอกลิงก์ผลงานให้ถูกต้อง");
     return;
   }
 
   submitButton.disabled = true;
-  submitButton.textContent = "กำลังส่งข้อมูล...";
+  submitButton.textContent = "กำลังส่งงาน...";
 
   try {
     const response = await fetch(API_URL + "/submit", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        studentId: selected._id,
-        studentName: selected._name,
+        studentId: student.studentId,
+        studentName: student.studentName,
         subject: "DBI223-224",
         assignmentName: "Week 5",
-        workLink: link
+        workLink: workLink
       })
     });
 
     const result = await response.json();
 
     if (!response.ok || result.ok !== true) {
-      throw new Error(result.message || "ระบบไม่สามารถบันทึกข้อมูลได้");
+      throw new Error(result.message || "บันทึกข้อมูลไม่สำเร็จ");
     }
 
-    alert("ส่งงานเรียบร้อยแล้ว! 🎉");
+    alert("ส่งงานเรียบร้อยแล้ว 🎉");
     document.getElementById("workLink").value = "";
+
     await loadStudents();
+
+    studentSelect.value = "";
+    studentId.value = "";
+    studentName.value = "";
+    studentStatus.value = "";
 
   } catch (error) {
     alert("ส่งงานไม่สำเร็จ: " + error.message);
