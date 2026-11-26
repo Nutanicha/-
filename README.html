@@ -2,234 +2,551 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DBI223-224 Student Assignment Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบส่งงานนักศึกษา | Digital Business Innovation</title>
 
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  padding:25px 15px;
-  font-family:'Prompt',sans-serif;
-  background:linear-gradient(135deg,#f4efff,#e8e5ff);
-  color:#30264a;
-}
-.container{
-  max-width:650px;
-  margin:auto;
-  background:white;
-  padding:30px;
-  border-radius:22px;
-  box-shadow:0 10px 35px #51408020;
-}
-h1{text-align:center;color:#7354b8;font-size:25px}
-.subtitle{text-align:center;color:#827895;margin-bottom:25px}
-label{display:block;margin:16px 0 7px;font-weight:500}
-input,select{
-  width:100%;
-  padding:13px;
-  border:1px solid #ddd5ef;
-  border-radius:10px;
-  font-family:inherit;
-  font-size:15px;
-  background:#fff;
-}
-input[readonly]{background:#f5f2fb;color:#65577f}
-button{
-  width:100%;
-  margin-top:22px;
-  padding:14px;
-  border:0;
-  border-radius:12px;
-  background:#7957bd;
-  color:white;
-  font-family:inherit;
-  font-size:16px;
-  font-weight:600;
-  cursor:pointer;
-}
-button:disabled{opacity:.55;cursor:not-allowed}
-.status{
-  margin-top:15px;
-  padding:12px;
-  border-radius:10px;
-  background:#f5f2fb;
-  text-align:center;
-  font-size:14px;
-}
-.note{font-size:13px;color:#887e9a;text-align:center;margin-top:18px}
-.error{color:#c0392b}
-.success{color:#218653}
-</style>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --primary-color: #6c5ce7;
+            --primary-hover: #5b4bc4;
+            --accent-color: #00b894;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --border-color: #dfe6e9;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(#dfe6e9 1px, transparent 1px),
+                radial-gradient(#dfe6e9 1px, var(--bg-color) 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px 30px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '</>';
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            color: var(--primary-color);
+            opacity: 0.4;
+            letter-spacing: 1px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 12px;
+            border-radius: 50%;
+            padding: 5px;
+            background: #f1f2f6;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        input[type="text"],
+        input[type="url"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+        }
+
+        input[readonly] {
+            color: var(--text-muted);
+            cursor: not-allowed;
+            background: #f1f2f6;
+        }
+
+        .status-box {
+            padding: 10px 13px;
+            border-radius: 9px;
+            font-size: 13px;
+            margin-top: 8px;
+            background: #f1f2f6;
+            color: var(--text-muted);
+        }
+
+        .status-box.pending {
+            background: #fff7e6;
+            color: #b7791f;
+        }
+
+        .status-box.done {
+            background: #e8f8f2;
+            color: #008b68;
+        }
+
+        .status-box.error {
+            background: #fff0f0;
+            color: #d63031;
+        }
+
+        .file-upload-box {
+            border: 2px dashed var(--border-color);
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #fafbfc;
+            transition: 0.3s;
+        }
+
+        .file-upload-box:hover {
+            border-color: var(--primary-color);
+            background: rgba(108, 92, 231, 0.02);
+        }
+
+        .file-upload-box p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .refresh-note {
+            margin-top: 6px;
+            font-size: 11px;
+            color: #9aa3a8;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 35px 22px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-<div class="container">
-  <h1>🦉 Student Assignment Hub</h1>
-  <div class="subtitle">DBI223-224 ระบบส่งงานนักศึกษา</div>
+    <div class="container">
 
-  <div id="loadStatus" class="status">กำลังโหลดรายชื่อนักศึกษาจาก Google Sheets...</div>
+        <div class="header">
+            <img
+                src="https://lh3.googleusercontent.com/d/1-kS8V_7MBTRBnByaI4U7m4HSz3lX3PoU"
+                alt="University Logo"
+                class="logo-img"
+                onerror="this.src='https://via.placeholder.com/70?text=LOGO'"
+            >
 
-  <form id="submitForm">
-    <label for="studentSelect">👤 เลือกรายชื่อนักศึกษา</label>
-    <select id="studentSelect" required disabled>
-      <option value="">กำลังโหลดข้อมูล...</option>
-    </select>
+            <h1>Assignment Submission</h1>
+            <p>Digital Business Innovation IT</p>
+        </div>
 
-    <label for="studentId">📌 รหัสนักศึกษา</label>
-    <input id="studentId" type="text" readonly required>
+        <form id="submitForm">
 
-    <label for="studentName">👤 ชื่อ - นามสกุล</label>
-    <input id="studentName" type="text" readonly required>
+            <div class="form-group">
+                <label for="studentId">📌 รหัสนักศึกษา</label>
+                <select id="studentId" required disabled>
+                    <option value="">กำลังโหลดรายชื่อนักศึกษา...</option>
+                </select>
+            </div>
 
-    <label for="studentStatus">📋 สถานะการส่งงาน</label>
-    <input id="studentStatus" type="text" readonly>
+            <div class="form-group">
+                <label for="studentName">👤 ชื่อ - นามสกุล</label>
+                <input
+                    type="text"
+                    id="studentName"
+                    placeholder="ระบบจะแสดงชื่ออัตโนมัติ"
+                    readonly
+                    required
+                >
+                <div id="studentStatus" class="status-box">
+                    กรุณาเลือกรหัสนักศึกษา
+                </div>
+            </div>
 
-    <label for="assignmentName">📝 ชื่องาน</label>
-    <select id="assignmentName" required>
-      <option value="Week 5">Week 5</option>
-    </select>
+            <div class="form-group">
+                <label for="assignmentName">📂 เลือกชื่องาน</label>
+                <select id="assignmentName" required>
+                    <option value="Week 5">Week 5</option>
+                </select>
+            </div>
 
-    <label for="workLink">🔗 ลิงก์ผลงาน</label>
-    <input id="workLink" type="url" placeholder="https://..." required>
+            <div class="form-group">
+                <label for="workLink">🔗 ลิงก์ผลงาน (Google Drive / GitHub / อื่นๆ)</label>
+                <input
+                    type="url"
+                    id="workLink"
+                    placeholder="https://..."
+                    required
+                >
+            </div>
 
-    <button id="submitButton" type="submit" disabled>ส่งงาน</button>
-  </form>
+            <button type="submit" class="submit-btn" id="submitButton" disabled>
+                🚀 ส่งงานเข้าระบบ
+            </button>
 
-  <div class="note">กำหนดส่ง 13/11/2569 · DBI223-224</div>
-</div>
+        </form>
 
-<script>
-const API_URL = "https://owl-assignment-bot.bewrattanasri24.workers.dev";
+        <div class="footer-note">
+            <div id="loadStatus">System Status: Connecting...</div>
+            <div class="refresh-note">Automatic synchronization enabled</div>
+        </div>
 
-const studentSelect = document.getElementById("studentSelect");
-const studentId = document.getElementById("studentId");
-const studentName = document.getElementById("studentName");
-const studentStatus = document.getElementById("studentStatus");
-const loadStatus = document.getElementById("loadStatus");
-const submitButton = document.getElementById("submitButton");
+    </div>
 
-let students = [];
+    <script>
+        // ==========================================
+        // SYSTEM CONFIGURATION
+        // ==========================================
 
-async function loadStudents() {
-  try {
-    loadStatus.textContent = "กำลังโหลดข้อมูลจาก Google Sheets...";
+        const API_URL =
+            'https://owl-assignment-bot.bewrattanasri24.workers.dev';
 
-    const response = await fetch(API_URL + "/students");
-    const result = await response.json();
+        const SUBJECT = 'DBI223-224';
+        const ASSIGNMENT = 'Week 5';
 
-    if (!response.ok || result.ok !== true || !Array.isArray(result.students)) {
-      throw new Error("ไม่สามารถอ่านข้อมูลจาก Google Sheets ได้");
-    }
+        const REFRESH_INTERVAL = 15000;
 
-    students = result.students;
+        // ==========================================
+        // ELEMENTS
+        // ==========================================
 
-    studentSelect.innerHTML =
-      '<option value="">-- เลือกรายชื่อนักศึกษา --</option>';
+        const form = document.getElementById('submitForm');
+        const studentSelect = document.getElementById('studentId');
+        const studentName = document.getElementById('studentName');
+        const studentStatus = document.getElementById('studentStatus');
+        const workLink = document.getElementById('workLink');
+        const submitButton = document.getElementById('submitButton');
+        const loadStatus = document.getElementById('loadStatus');
 
-    students.forEach((student, index) => {
-      const option = document.createElement("option");
-      option.value = index;
-      option.textContent =
-        `${student.studentId} - ${student.studentName} (${student.status})`;
+        let students = [];
+        let isSubmitting = false;
 
-      if (student.status === "ส่งแล้ว") {
-        option.disabled = true;
-      }
+        // ==========================================
+        // LOAD STUDENTS FROM GOOGLE SHEETS
+        // ==========================================
 
-      studentSelect.appendChild(option);
-    });
+        async function loadStudents() {
+            try {
+                const response = await fetch(
+                    `${API_URL}/students`,
+                    {
+                        method: 'GET',
+                        cache: 'no-store'
+                    }
+                );
 
-    studentSelect.disabled = false;
-    submitButton.disabled = false;
+                if (!response.ok) {
+                    throw new Error('ไม่สามารถเชื่อมต่อระบบข้อมูลได้');
+                }
 
-    loadStatus.textContent =
-      `โหลดข้อมูลสำเร็จ ${students.length} คน | ${result.subject} | ${result.assignmentName} | กำหนดส่ง ${result.dueDate}`;
+                const result = await response.json();
 
-  } catch (error) {
-    loadStatus.textContent = "โหลดข้อมูลไม่สำเร็จ: " + error.message;
-    studentSelect.disabled = true;
-    submitButton.disabled = true;
-  }
-}
+                if (!result.ok || !Array.isArray(result.students)) {
+                    throw new Error('รูปแบบข้อมูลไม่ถูกต้อง');
+                }
 
-studentSelect.addEventListener("change", function () {
-  const student = students[Number(this.value)];
+                students = result.students;
 
-  if (!student) {
-    studentId.value = "";
-    studentName.value = "";
-    studentStatus.value = "";
-    return;
-  }
+                const previousId = studentSelect.value;
 
-  studentId.value = student.studentId;
-  studentName.value = student.studentName;
-  studentStatus.value = student.status;
+                studentSelect.innerHTML =
+                    '<option value="">-- เลือกรหัสนักศึกษา --</option>';
 
-  submitButton.disabled = student.status !== "ยังไม่ส่ง";
-});
+                students.forEach(student => {
+                    const option = document.createElement('option');
 
-document.getElementById("submitForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
+                    option.value = String(student.studentId);
+                    option.textContent =
+                        `${student.studentId} - ${student.studentName}`;
 
-  const student = students[Number(studentSelect.value)];
+                    option.dataset.name = student.studentName;
+                    option.dataset.status = student.status;
 
-  if (!student || student.status !== "ยังไม่ส่ง") {
-    alert("กรุณาเลือกนักศึกษาที่ยังไม่ส่งงาน");
-    return;
-  }
+                    studentSelect.appendChild(option);
+                });
 
-  const workLink = document.getElementById("workLink").value.trim();
+                studentSelect.disabled = false;
 
-  if (!/^https?:\/\//i.test(workLink)) {
-    alert("กรุณากรอกลิงก์ผลงานให้ถูกต้อง");
-    return;
-  }
+                if (previousId) {
+                    studentSelect.value = previousId;
+                    updateStudentInfo();
+                }
 
-  submitButton.disabled = true;
-  submitButton.textContent = "กำลังส่งงาน...";
+                loadStatus.textContent =
+                    'System Status: Connected & Ready ✨';
 
-  try {
-    const response = await fetch(API_URL + "/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        studentId: student.studentId,
-        studentName: student.studentName,
-        subject: "DBI223-224",
-        assignmentName: "Week 5",
-        workLink: workLink
-      })
-    });
+                updateStudentInfo();
 
-    const result = await response.json();
+            } catch (error) {
+                console.error('Load students error:', error);
 
-    if (!response.ok || result.ok !== true) {
-      throw new Error(result.message || "บันทึกข้อมูลไม่สำเร็จ");
-    }
+                loadStatus.textContent =
+                    'System Status: Connection Error';
 
-    alert("ส่งงานเรียบร้อยแล้ว 🎉");
-    document.getElementById("workLink").value = "";
+                studentSelect.innerHTML =
+                    '<option value="">โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่</option>';
 
-    await loadStudents();
+                studentSelect.disabled = true;
+                submitButton.disabled = true;
+            }
+        }
 
-    studentSelect.value = "";
-    studentId.value = "";
-    studentName.value = "";
-    studentStatus.value = "";
+        // ==========================================
+        // UPDATE STUDENT INFORMATION
+        // ==========================================
 
-  } catch (error) {
-    alert("ส่งงานไม่สำเร็จ: " + error.message);
-  } finally {
-    submitButton.textContent = "ส่งงาน";
-    submitButton.disabled = false;
-  }
-});
+        function updateStudentInfo() {
+            const selectedId = studentSelect.value;
 
-loadStudents();
-</script>
+            const student = students.find(
+                item => String(item.studentId) === selectedId
+            );
+
+            if (!student) {
+                studentName.value = '';
+                studentStatus.textContent =
+                    'กรุณาเลือกรหัสนักศึกษา';
+
+                studentStatus.className = 'status-box';
+                submitButton.disabled = true;
+                return;
+            }
+
+            studentName.value = student.studentName;
+
+            if (student.status === 'ส่งแล้ว') {
+                studentStatus.textContent =
+                    '✅ สถานะ: ส่งงานแล้ว ไม่สามารถส่งซ้ำได้';
+
+                studentStatus.className = 'status-box done';
+                submitButton.disabled = true;
+
+            } else {
+                studentStatus.textContent =
+                    '⏳ สถานะ: ยังไม่ส่ง สามารถส่งงานได้';
+
+                studentStatus.className = 'status-box pending';
+                submitButton.disabled = false;
+            }
+        }
+
+        studentSelect.addEventListener(
+            'change',
+            updateStudentInfo
+        );
+
+        // ==========================================
+        // SUBMIT ASSIGNMENT
+        // ==========================================
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            if (isSubmitting) return;
+
+            const selectedId = studentSelect.value;
+
+            const student = students.find(
+                item => String(item.studentId) === selectedId
+            );
+
+            if (!student) {
+                alert('กรุณาเลือกรหัสนักศึกษา');
+                return;
+            }
+
+            if (student.status === 'ส่งแล้ว') {
+                alert('นักศึกษารหัสนี้ส่งงานเรียบร้อยแล้ว');
+                updateStudentInfo();
+                return;
+            }
+
+            const link = workLink.value.trim();
+
+            if (!link) {
+                alert('กรุณากรอกลิงก์ผลงาน');
+                return;
+            }
+
+            isSubmitting = true;
+            submitButton.disabled = true;
+            submitButton.textContent = '⏳ กำลังส่งงาน...';
+
+            try {
+                const response = await fetch(
+                    `${API_URL}/submit`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            studentId: student.studentId,
+                            studentName: student.studentName,
+                            subject: SUBJECT,
+                            assignmentName: ASSIGNMENT,
+                            workLink: link
+                        })
+                    }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok || !result.ok) {
+                    throw new Error(
+                        result.message || 'ระบบไม่สามารถบันทึกข้อมูลได้'
+                    );
+                }
+
+                alert(
+                    '🎉 ส่งงานเรียบร้อยแล้ว!\n\n' +
+                    'ระบบบันทึกข้อมูลและส่งการแจ้งเตือนแล้ว'
+                );
+
+                workLink.value = '';
+
+                await loadStudents();
+
+                studentSelect.value = selectedId;
+                updateStudentInfo();
+
+            } catch (error) {
+                console.error('Submit error:', error);
+
+                alert(
+                    '❌ ส่งงานไม่สำเร็จ\n\n' +
+                    error.message +
+                    '\n\nกรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง'
+                );
+
+                submitButton.disabled = false;
+
+            } finally {
+                isSubmitting = false;
+                submitButton.textContent = '🚀 ส่งงานเข้าระบบ';
+
+                updateStudentInfo();
+            }
+        });
+
+        // ==========================================
+        // AUTOMATIC DATA REFRESH
+        // ==========================================
+
+        loadStudents();
+
+        setInterval(() => {
+            if (!isSubmitting) {
+                loadStudents();
+            }
+        }, REFRESH_INTERVAL);
+
+    </script>
 </body>
 </html>
